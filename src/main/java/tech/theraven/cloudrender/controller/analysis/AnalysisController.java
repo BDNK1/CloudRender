@@ -4,7 +4,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import tech.theraven.cloudrender.api.dto.JobAnalysisDto;
 import tech.theraven.cloudrender.controller.mapper.JobDtoMapper;
-import tech.theraven.cloudrender.domain.Job;
+import tech.theraven.cloudrender.domain.entity.Job;
 import tech.theraven.cloudrender.service.JobService;
 
 @Controller

@@ -1,17 +1,21 @@
 package tech.theraven.cloudrender.service;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import tech.theraven.cloudrender.api.dto.GoogleDocumentDto;
-import tech.theraven.cloudrender.api.dto.JobSpecsDto;
-import tech.theraven.cloudrender.domain.Job;
+import tech.theraven.cloudrender.domain.entity.Job;
 import tech.theraven.cloudrender.domain.JobSpecs;
-import tech.theraven.cloudrender.domain.JobStatus;
-import tech.theraven.cloudrender.domain.Status;
+import tech.theraven.cloudrender.domain.enums.JobStatus;
+import tech.theraven.cloudrender.domain.enums.WorkerUnitStatus;
 import tech.theraven.cloudrender.repository.JobRepository;
-import tech.theraven.cloudrender.util.BasicErrorType;
-import tech.theraven.cloudrender.util.Response;
+import tech.theraven.cloudrender.util.response.BasicErrorType;
+import tech.theraven.cloudrender.util.response.Response;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JobService {
 
     GcpStorageService gcpStorageService;
@@ -33,21 +37,25 @@ public class JobService {
         return Response.empty();
     }
 
-    public Response<Integer> checkProgress(Long jobId) {
+    public Response<Long> checkProgress(Long jobId) {
         var jobOptional = jobRepository.findById(jobId);
         if (jobOptional.isEmpty()) {
-            return Response.error(BasicErrorType.AUTHORIZATION, "no such job");
+            return Response.error(BasicErrorType.VALIDATION, "no such job");
         }
         var workUnits = jobOptional.get().getWorkUnits();
-
+        if (jobOptional.get().getStatus() == JobStatus.NEW) {
+            return Response.error(BasicErrorType.VALIDATION, "rendering isn't started");
+        }
+        if (workUnits == null) {
+            return Response.of(0L);
+        }
         return Response.of(workUnits.stream()
-                .mapToInt(w -> w.getStatus() == Status.DONE ? 1 : 0)
-                .sum() / workUnits.size()
+                .filter(w -> w.getStatus() == WorkerUnitStatus.DONE).count() / workUnits.size()
         );
     }
 
     public Response<Job> uploadFile(GoogleDocumentDto doc) {
-        var fileUrl = gcpStorageService.uploadFile(doc);
+        var fileUrl = "hello";//gcpStorageService.uploadFile(doc);
         //TODO: send this event through websocket to our machine for analysis and updating info
         return Response.of(createJob(fileUrl));
     }

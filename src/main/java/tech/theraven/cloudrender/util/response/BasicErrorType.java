@@ -1,4 +1,4 @@
-package tech.theraven.cloudrender.util;
+package tech.theraven.cloudrender.util.response;
 
 public enum BasicErrorType implements ErrorType {
 

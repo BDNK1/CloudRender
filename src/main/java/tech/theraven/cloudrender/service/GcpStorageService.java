@@ -4,27 +4,30 @@ package tech.theraven.cloudrender.service;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tech.theraven.cloudrender.api.dto.GoogleDocumentDto;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class GcpStorageService {
 
-    private final Storage storage;
+//    private final Storage storage;
 
-    @Value("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]")
-    private String path;
-
-    private String bucketName;
+//    @Value("gs://[YOUR_GCS_BUCKET]/[GCS_FILE_NAME]")
+//    private String path;
+//
+//    private String bucketName;
 
     public String uploadFile(GoogleDocumentDto doc) {
-        Bucket bucket = storage.get(bucketName);
-        Blob blenderFileBlob = bucket.create(getPath(doc.getName()), doc.getContent(), doc.getContentType());
+//        Bucket bucket = storage.get(bucketName);
+//        Blob blenderFileBlob = bucket.create(getPath(doc.getName()), doc.getContent(), doc.getContentType());
 
-        return "https://storage.googleapis.com/" + bucketName + "/" + blenderFileBlob.getName();
+        return "https://storage.googleapis.com/" ;//+ bucketName + "/" + blenderFileBlob.getName();
     }
 
     public String getPath(String name) {

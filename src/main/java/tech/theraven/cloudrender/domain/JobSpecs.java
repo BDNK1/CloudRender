@@ -5,5 +5,5 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class JobSpecs {
 
-    String otherSpecs;
+    String resolution;
 }

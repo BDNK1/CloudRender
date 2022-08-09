@@ -1,4 +1,4 @@
-package tech.theraven.cloudrender.util;
+package tech.theraven.cloudrender.util.response;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -47,30 +47,6 @@ public class Response<T> {
         return emptyResponse;
     }
 
-    public static Response<Void> catching(RunnableException action, Function<Exception, Error> ifFailure) {
-        try {
-            action.run();
-            return Response.empty();
-        } catch (Exception t) {
-            return Response.error(ifFailure.apply(t));
-        }
-    }
-
-    public static <T> Response<T> catching(SupplierException<T> action, Function<Exception, Error> ifFailure) {
-        try {
-            return Response.of(action.get());
-        } catch (Exception t) {
-            return Response.error(ifFailure.apply(t));
-        }
-    }
-
-    public static <T> Response<T> catchingResponse(SupplierException<Response<T>> action, Function<Exception, Error> ifFailure) {
-        try {
-            return action.get();
-        } catch (Exception t) {
-            return Response.error(ifFailure.apply(t));
-        }
-    }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static <T> Response<T> fromOptional(Optional<T> optional, Supplier<Error> ifEmpty) {

@@ -1,4 +1,4 @@
-package tech.theraven.cloudrender.domain;
+package tech.theraven.cloudrender.domain.generic;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import tech.theraven.cloudrender.domain.DatabaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
