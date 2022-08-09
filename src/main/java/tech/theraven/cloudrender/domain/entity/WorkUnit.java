@@ -16,8 +16,8 @@ import javax.persistence.*;
 public class WorkUnit extends AuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "worker_id_seq")
-    @SequenceGenerator(name = "worker_id_seq", sequenceName = "worker_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "worker_gen")
+    @SequenceGenerator(name = "worker_gen", sequenceName = "worker_id_seq")
     Long id;
 
     @ManyToOne(optional = false)

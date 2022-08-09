@@ -55,7 +55,7 @@ public class JobService {
     }
 
     public Response<Job> uploadFile(GoogleDocumentDto doc) {
-        var fileUrl = "hello";//gcpStorageService.uploadFile(doc);
+        var fileUrl = gcpStorageService.uploadFile(doc);
         //TODO: send this event through websocket to our machine for analysis and updating info
         return Response.of(createJob(fileUrl));
     }

@@ -1,4 +1,9 @@
 spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: render
   datasource:
     url: jdbc:postgresql://localhost:5433/render
     username: postgres

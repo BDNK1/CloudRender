@@ -25,7 +25,7 @@ import java.time.Instant;
 public abstract class AuditableEntity implements DatabaseEntity {
 
     @EqualsAndHashCode.Exclude
-    @Column(name = "created_on", nullable = false, updatable = false)
+    @Column(name = "created_on", updatable = false)
     @CreatedDate
     private Instant createdOn;
 

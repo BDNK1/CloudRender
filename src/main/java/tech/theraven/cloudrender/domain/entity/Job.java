@@ -19,8 +19,8 @@ import java.util.List;
 public class Job extends AuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "job_id_seq")
-    @SequenceGenerator(name = "job_id_seq", sequenceName = "job_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_gen")
+    @SequenceGenerator(name = "user_gen", sequenceName = "job_id_seq")
     Long id;
     String fileUrl;
     Long framesCount;

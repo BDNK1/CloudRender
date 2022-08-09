@@ -27,7 +27,7 @@ public class GcpStorageService {
 //        Bucket bucket = storage.get(bucketName);
 //        Blob blenderFileBlob = bucket.create(getPath(doc.getName()), doc.getContent(), doc.getContentType());
 
-        return "https://storage.googleapis.com/" ;//+ bucketName + "/" + blenderFileBlob.getName();
+        return "https://storage.googleapis.com/"+"gell" ;//+ bucketName + "/" + blenderFileBlob.getName();
     }
 
     public String getPath(String name) {
