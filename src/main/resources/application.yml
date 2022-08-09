@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: postgres
+    password: 1111
+  application:
+    name: app
+  cloud:
+    gcp:
+      project-id: gaimin2020
+      credentials:
+        location: classpath:gaimin-backend-gcp-service-acc-key.json
+
