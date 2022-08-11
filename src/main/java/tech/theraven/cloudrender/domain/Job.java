@@ -1,10 +1,9 @@
-package tech.theraven.cloudrender.domain.entity;
+package tech.theraven.cloudrender.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tech.theraven.cloudrender.domain.JobSpecs;
 import tech.theraven.cloudrender.domain.enums.JobStatus;
 import tech.theraven.cloudrender.domain.generic.AuditableEntity;
 
@@ -23,15 +22,19 @@ public class Job extends AuditableEntity {
     @SequenceGenerator(name = "user_gen", sequenceName = "job_id_seq")
     Long id;
     String fileUrl;
-    Long framesCount;
-    Long difficulty;
+    @Embedded
+    AnalysisInfo analysis;
     @Embedded
     JobSpecs specs;
     @Enumerated(EnumType.STRING)
     JobStatus status;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "job")
+    @OneToMany(mappedBy = "job")
     List<WorkUnit> workUnits;
+
+    public boolean isAnalized(){
+        return analysis != null;
+    }
 }
 
 

@@ -13,8 +13,10 @@ spring:
   cloud:
     gcp:
       storage:
-        enabled: false
-#      project-id: gaimin2020
-#      credentials:
-#        location: classpath:gaimin-backend-gcp-service-acc-key.json
+        enabled: true
+      project-id: silken-binder-358911
+      credentials:
+        location: classpath:creds.json
 
+job-distribution:
+  framesPerUnit: 10

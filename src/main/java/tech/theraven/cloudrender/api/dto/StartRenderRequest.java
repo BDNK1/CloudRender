@@ -1,6 +1,5 @@
 package tech.theraven.cloudrender.api.dto;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StartRenderRequest {
 
-    Long fileId;
+    Long jobId;
 
     JobSpecsDto specs;
 }

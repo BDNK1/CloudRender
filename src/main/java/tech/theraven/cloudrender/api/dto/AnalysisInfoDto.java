@@ -8,6 +8,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class JobSpecsDto {
-    String engine;
+public class AnalysisInfoDto {
+
+    Long framesCount;
+    Long difficulty;
+
 }

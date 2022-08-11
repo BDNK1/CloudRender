@@ -5,13 +5,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import tech.theraven.cloudrender.api.dto.GoogleDocumentDto;
-import tech.theraven.cloudrender.domain.entity.Job;
+import tech.theraven.cloudrender.domain.Job;
 import tech.theraven.cloudrender.domain.JobSpecs;
+import tech.theraven.cloudrender.domain.WorkUnit;
 import tech.theraven.cloudrender.domain.enums.JobStatus;
-import tech.theraven.cloudrender.domain.enums.WorkerUnitStatus;
-import tech.theraven.cloudrender.repository.JobRepository;
+import tech.theraven.cloudrender.domain.enums.WorkUnitStatus;
 import tech.theraven.cloudrender.util.response.BasicErrorType;
+import tech.theraven.cloudrender.util.response.Error;
 import tech.theraven.cloudrender.util.response.Response;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,10 +23,15 @@ public class JobService {
 
     GcpStorageService gcpStorageService;
 
-    JobRepository jobRepository;
+    JobEntityService jobEntityService;
 
-    public Response<Void> startRender(Long jobId, JobSpecs specs) {
-        var jobOptional = jobRepository.findById(jobId);
+    public Response<Job> createJob(GoogleDocumentDto doc) {
+        var fileUrl = gcpStorageService.uploadFile(doc);
+        return Response.of(jobEntityService.createJob(fileUrl));
+    }
+
+    public Response<Void> setJobAvailable(Long jobId, JobSpecs specs) {
+        var jobOptional = jobEntityService.findById(jobId);
         if (jobOptional.isEmpty()) {
             return Response.error(BasicErrorType.AUTHORIZATION, "no such job");
         }
@@ -33,12 +41,12 @@ public class JobService {
         }
         job.setStatus(JobStatus.AVAILABLE);
         job.setSpecs(specs);
-        jobRepository.save(job);
+        jobEntityService.update(job);
         return Response.empty();
     }
 
     public Response<Long> checkProgress(Long jobId) {
-        var jobOptional = jobRepository.findById(jobId);
+        var jobOptional = jobEntityService.findById(jobId);
         if (jobOptional.isEmpty()) {
             return Response.error(BasicErrorType.VALIDATION, "no such job");
         }
@@ -50,25 +58,28 @@ public class JobService {
             return Response.of(0L);
         }
         return Response.of(workUnits.stream()
-                .filter(w -> w.getStatus() == WorkerUnitStatus.DONE).count() / workUnits.size()
+                .filter(w -> w.getStatus() == WorkUnitStatus.DONE).count() / workUnits.size()
         );
     }
 
-    public Response<Job> uploadFile(GoogleDocumentDto doc) {
-        var fileUrl = gcpStorageService.uploadFile(doc);
-        //TODO: send this event through websocket to our machine for analysis and updating info
-        return Response.of(createJob(fileUrl));
+
+    public Response<String> getResult(Long jobId) {
+        var jobOptional = jobEntityService.findById(jobId);
+        if (jobOptional.isEmpty()) {
+            return Response.error(BasicErrorType.VALIDATION, "no such job");
+        }
+        if (jobOptional.get().getStatus() != JobStatus.DONE) {
+            return Response.error(new Error(BasicErrorType.UNEXPECTED, "job isnt done yet"));
+        }
+
+        return Response.of(jobOptional.get().getFileUrl());
     }
 
-    private Job createJob(String fileUrl) {
-        var job = Job.builder()
-                .status(JobStatus.NEW)
-                .fileUrl(fileUrl)
-                .build();
-        return jobRepository.save(job);
-    }
-
-    public Job update(Job job) {
-        return jobRepository.save(job);
+    public void checkIfJobDone(Job job) {
+        List<WorkUnit> workUnits = job.getWorkUnits();
+        if (workUnits.stream().filter(wu -> wu.getStatus() == WorkUnitStatus.DONE).count() == workUnits.size()) {
+            job.setStatus(JobStatus.DONE);
+            jobEntityService.update(job);
+        }
     }
 }

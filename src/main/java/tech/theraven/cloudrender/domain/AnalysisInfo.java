@@ -11,7 +11,9 @@ import javax.persistence.Entity;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobSpecs {
+public class AnalysisInfo {
 
-    String engine;
+
+    Long framesCount;
+    Long difficulty;
 }

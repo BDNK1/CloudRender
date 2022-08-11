@@ -15,6 +15,7 @@ public class DocumentParser {
 
     @SneakyThrows(IOException.class)
     public static GoogleDocumentDto parseFromFile(MultipartFile file) {
+        //TODO: validation
         GoogleDocumentDto document = new GoogleDocumentDto();
         document.setName(file.getOriginalFilename());
         document.setContentType(file.getContentType());

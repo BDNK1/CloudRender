@@ -1,4 +1,4 @@
-package tech.theraven.cloudrender.api.client;
+package tech.theraven.cloudrender.api;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,5 +17,8 @@ public interface ClientApi {
 
     @GetMapping("/render/progress")
     Response<Long> getProgress(@RequestParam Long jobId);
+
+    @GetMapping("/render/result")
+    Response<String> getResult(@RequestParam Long jobId);
 
 }

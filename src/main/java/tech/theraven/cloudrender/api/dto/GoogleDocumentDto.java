@@ -1,12 +1,13 @@
 package tech.theraven.cloudrender.api.dto;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "content")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class GoogleDocumentDto {
 
     private String name;
