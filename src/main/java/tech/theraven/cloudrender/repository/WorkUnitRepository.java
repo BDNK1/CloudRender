@@ -6,13 +6,13 @@ import tech.theraven.cloudrender.domain.Job;
 import tech.theraven.cloudrender.domain.WorkUnit;
 import tech.theraven.cloudrender.domain.enums.WorkUnitStatus;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface WorkUnitRepository extends CrudRepository<WorkUnit, Long> {
 
+    Optional<WorkUnit> findFirstByStatusAndJobOrderByCreatedOnAsc(WorkUnitStatus status, Job job);
 
-    Optional<WorkUnit> findFirsByStatusAndJobOrderByCreatedOnAsc(WorkUnitStatus status, Job job);
-
-    Optional<WorkUnit> findFirsByStatusOrderByCreatedOnAsc(WorkUnitStatus status);
+    Optional<WorkUnit> findFirstByStatusOrderByCreatedOnAsc(WorkUnitStatus status);
 }

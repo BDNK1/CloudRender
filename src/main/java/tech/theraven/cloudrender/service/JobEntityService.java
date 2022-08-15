@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import tech.theraven.cloudrender.domain.Job;
 import tech.theraven.cloudrender.domain.enums.JobStatus;
 import tech.theraven.cloudrender.repository.JobRepository;
-import tech.theraven.cloudrender.util.response.Response;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,9 +44,10 @@ public class JobEntityService {
         return jobRepository.findAllByAnalysisIsNullOrderByCreatedOn();
     }
 
-    public List<Job> findAnalizedJobsWithoutWorkUnits() {
-        return jobRepository.findAllByAnalysisIsNotNull().stream()
-                .filter(j -> j.getWorkUnits() != null)
+    public List<Job> findAvailableAndAnalizedJobsWithoutWorkUnits() {
+        return jobRepository.findAllByAnalysisIsNotNullAndStatus(JobStatus.AVAILABLE).stream()
+                .filter(j -> j.getWorkUnits().isEmpty() )
+                .peek(System.out::println)
                 .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,7 @@
 package tech.theraven.cloudrender.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.theraven.cloudrender.domain.enums.WorkerStatStatus;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkerStat extends AuditableEntity {
@@ -21,6 +23,6 @@ public class WorkerStat extends AuditableEntity {
     WorkUnit workUnit;
     @OneToOne
     Worker worker;
-
+    @Enumerated(EnumType.STRING)
     WorkerStatStatus status;
 }

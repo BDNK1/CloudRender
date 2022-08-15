@@ -32,9 +32,15 @@ public class Job extends AuditableEntity {
     @OneToMany(mappedBy = "job")
     List<WorkUnit> workUnits;
 
-    public boolean isAnalized(){
+    public boolean isAnalized() {
         return analysis != null;
     }
+
+    public String getName() {
+        return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+    }
+
+//    public boolean
 }
 
 

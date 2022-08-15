@@ -16,6 +16,6 @@ public class WorkUnitDto {
     String fileUrl;
     Long startFrame;
     Long endFrame;
-    JobSpecsDto jobSpecsDto;
+    JobSpecsDto specs;
 
 }

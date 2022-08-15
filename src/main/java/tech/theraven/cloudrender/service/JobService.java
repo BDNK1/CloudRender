@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import tech.theraven.cloudrender.api.dto.GoogleDocumentDto;
 import tech.theraven.cloudrender.domain.Job;
 import tech.theraven.cloudrender.domain.JobSpecs;
@@ -25,8 +26,8 @@ public class JobService {
 
     JobEntityService jobEntityService;
 
-    public Response<Job> createJob(GoogleDocumentDto doc) {
-        var fileUrl = gcpStorageService.uploadFile(doc);
+    public Response<Job> createJob(MultipartFile file) {
+        var fileUrl = gcpStorageService.uploadFile(file);
         return Response.of(jobEntityService.createJob(fileUrl));
     }
 

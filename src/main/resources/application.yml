@@ -17,6 +17,10 @@ spring:
       project-id: silken-binder-358911
       credentials:
         location: classpath:creds.json
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
 
 job-distribution:
   framesPerUnit: 10

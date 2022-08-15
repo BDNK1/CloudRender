@@ -23,8 +23,7 @@ public class ClientController implements ClientApi {
 
     @Override
     public Response<JobDto> upload(MultipartFile file) {
-        var document = DocumentParser.parseFromFile(file);
-        return jobService.createJob(document).map(jobDtoMapper::toJobDto);
+        return jobService.createJob(file).map(jobDtoMapper::toJobDto);
     }
 
     @Override

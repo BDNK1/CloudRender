@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import tech.theraven.cloudrender.domain.Worker;
-import tech.theraven.cloudrender.domain.enums.WorkUnitStatus;
+import tech.theraven.cloudrender.domain.enums.WorkerStatStatus;
 import tech.theraven.cloudrender.repository.WorkerRepository;
 import tech.theraven.cloudrender.util.response.BasicErrorType;
 import tech.theraven.cloudrender.util.response.Error;
@@ -31,18 +31,19 @@ public class WorkerService {
                 () -> new Error(BasicErrorType.VALIDATION, "no such worker"));
     }
 
-
     public Response<Void> confirmResult(Worker worker) {
         return workerStatService.getCurrentWorkUnit(worker)
                 .flatMap(workUnitService::confirmResult)
+                .peek(wu -> workerStatService.changeCurrentStatus(worker, WorkerStatStatus.DONE))
+                .peekOnError(wu -> workerStatService.changeCurrentStatus(worker, WorkerStatStatus.FAILED))
                 .peek(wu -> jobService.checkIfJobDone(wu.getJob()))
                 .andThen(Response::empty);
-
     }
 
-    public Response<Void> updateStatus(Worker worker, WorkUnitStatus status) {
+    public Response<Void> updateWorkerStat(Worker worker, WorkerStatStatus status) {
         return workerStatService.getCurrentWorkUnit(worker)
-                .peek(w -> workUnitService.changeStatus(w, status))
+                .peek(w -> workerStatService.changeCurrentStatus(worker, status))
                 .andThen(Response::empty);
     }
+
 }

@@ -13,7 +13,6 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 public class AnalysisInfo {
 
-
     Long framesCount;
     Long difficulty;
 }

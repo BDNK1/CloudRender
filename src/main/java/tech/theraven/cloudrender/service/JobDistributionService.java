@@ -33,23 +33,39 @@ public class JobDistributionService {
             return Response.error(new Error(BasicErrorType.VALIDATION, "you already have a job"));
         }
 
+        Response<WorkUnit> lastJobWorkUnit = findWorkUnitFromLastJob(worker);
+        if (lastJobWorkUnit.isSuccess()) return lastJobWorkUnit;
+
+        Optional<WorkUnit> workUnit = workUnitService.findAvailableWorkUnit();
+        if (workUnit.isPresent()) {
+            workerStatService.create(worker, workUnit.get());
+            return Response.of(workUnit.get());
+        }
+
+        return generateWorkUnitsAndGet(worker);
+    }
+
+    private Response<WorkUnit> generateWorkUnitsAndGet(Worker worker) {
+        System.out.println("hello");
+        List<Job> analizedJobsWithoutWorkUnits = jobEntityService.findAvailableAndAnalizedJobsWithoutWorkUnits();
+        var workUnits = workUnitService.brokeIntoWorkUnits(analizedJobsWithoutWorkUnits);
+        Optional<WorkUnit> min = workUnits.stream().min(Comparator.comparing(WorkUnit::getCreatedOn));
+        return Response.fromOptional(min, () -> new Error(BasicErrorType.UNEXPECTED, "no work, comeback later"))
+                .peek(wu -> workUnitService.changeStatus(wu, WorkUnitStatus.IN_PROGRESS))
+                .peek(wu -> workerStatService.create(worker, min.get()));
+    }
+
+    private Response<WorkUnit> findWorkUnitFromLastJob(Worker worker) {
         Optional<Job> lastJob = workerStatService.getLastJob(worker);
         if (lastJob.isPresent()) {
             Optional<WorkUnit> lastJobWorkUnit = workUnitService.findAvailableWorkUnit(lastJob.get());
             if (lastJobWorkUnit.isPresent()) {
                 workUnitService.changeStatus(lastJobWorkUnit.get(), WorkUnitStatus.IN_PROGRESS);
+                workerStatService.create(worker, lastJobWorkUnit.get());
                 return Response.of(lastJobWorkUnit.get());
             }
         }
-
-        Optional<WorkUnit> workUnit = workUnitService.findAvailableWorkUnit();
-        if (workUnit.isEmpty()) {
-            List<Job> analizedJobsWithoutWorkUnits = jobEntityService.findAnalizedJobsWithoutWorkUnits();
-            var workUnits = workUnitService.brokeIntoWorkUnits(analizedJobsWithoutWorkUnits);
-            Optional<WorkUnit> min = workUnits.stream().min(Comparator.comparing(WorkUnit::getCreatedOn));
-            return Response.fromOptional(min, () -> new Error(BasicErrorType.UNEXPECTED, "no work, comeback later"));
-        }
-        return Response.of(workUnit.get());
+        return Response.error(new Error(BasicErrorType.UNEXPECTED, "no workunit from last job"));
     }
 
 }

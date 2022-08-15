@@ -1,14 +1,12 @@
 package tech.theraven.cloudrender.service;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tech.theraven.cloudrender.domain.Job;
 import tech.theraven.cloudrender.domain.WorkUnit;
-import tech.theraven.cloudrender.domain.Worker;
 import tech.theraven.cloudrender.domain.enums.WorkUnitStatus;
 import tech.theraven.cloudrender.repository.WorkUnitRepository;
 import tech.theraven.cloudrender.util.response.BasicErrorType;
@@ -18,31 +16,25 @@ import tech.theraven.cloudrender.util.response.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WorkUnitService {
 
-    GcpStorageService gcpStorageService;
-
-
-    WorkUnitRepository workUnitRepository;
-
+    final GcpStorageService gcpStorageService;
+    final WorkUnitRepository workUnitRepository;
 
     @Value("${job-distribution.framesPerUnit}")
     long framesPerUnit;
 
     public Optional<WorkUnit> findAvailableWorkUnit() {
-
-        return workUnitRepository.findFirsByStatusOrderByCreatedOnAsc(WorkUnitStatus.AVAILABLE);
+        return workUnitRepository.findFirstByStatusOrderByCreatedOnAsc(WorkUnitStatus.AVAILABLE);
     }
 
     public Optional<WorkUnit> findAvailableWorkUnit(Job job) {
-        return workUnitRepository.findFirsByStatusAndJobOrderByCreatedOnAsc(WorkUnitStatus.AVAILABLE, job);
+        return workUnitRepository.findFirstByStatusAndJobOrderByCreatedOnAsc(WorkUnitStatus.AVAILABLE, job);
     }
 
     public void changeStatus(WorkUnit workUnit, WorkUnitStatus status) {
@@ -51,15 +43,17 @@ public class WorkUnitService {
     }
 
     public List<WorkUnit> brokeIntoWorkUnits(List<Job> jobs) {
-        return jobs.stream()
+        var workUnits = jobs.stream()
                 .map(this::brokeIntoWorkUnits)
                 .filter(Response::isSuccess)
                 .flatMap(r -> r.getData().stream())
-                .collect(Collectors.toList());
+                .toList();
+        workUnitRepository.saveAll(workUnits);
+        return workUnits;
     }
 
     Response<List<WorkUnit>> brokeIntoWorkUnits(Job job) {
-        if (job.getWorkUnits() != null || !job.isAnalized()) {
+        if (!job.getWorkUnits().isEmpty() || !job.isAnalized()) {
             return Response.error(new Error(BasicErrorType.VALIDATION, "job already broken into work units"));
         }
         List<WorkUnit> workUnits = new ArrayList<>();
@@ -68,17 +62,18 @@ public class WorkUnitService {
 
         Stream.iterate(0L, n -> ++n)
                 .limit(unitsCount)
-                .forEach((n) -> {
+                .forEach(n -> {
                     WorkUnit unit = WorkUnit.builder()
                             .job(job)
-                            .startFrame(n * framesPerUnit + 1)
-                            .endFrame(++n * framesPerUnit)
+                            .startFrame(n * framesPerUnit)
+                            .endFrame(++n * framesPerUnit - 1)
                             .status(WorkUnitStatus.AVAILABLE)
                             .build();
                     workUnits.add(unit);
                 });
 
         distributeOverflow(workUnits, framesCount % framesPerUnit);
+        System.out.println(workUnits);
         return Response.of(workUnits);
 
     }

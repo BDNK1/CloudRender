@@ -11,7 +11,7 @@ import tech.theraven.cloudrender.domain.JobSpecs;
 @Mapper(componentModel = "spring")
 public interface JobDtoMapper {
 
-    @Mapping(target = "fileName", expression = "java(job.getFileUrl().substring(job.getFileUrl().lastIndexOf(\"/\")+1))")
+    @Mapping(target = "fileName", expression = "java(job.getName())")
     JobDto toJobDto(Job job);
 
     Job toJob(JobAnalysisDto jobDto);

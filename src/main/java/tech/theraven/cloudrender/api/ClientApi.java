@@ -7,7 +7,7 @@ import tech.theraven.cloudrender.api.dto.StartRenderRequest;
 import tech.theraven.cloudrender.util.response.Response;
 
 @RequestMapping("/api/client")
-public interface ClientApi {
+public interface    ClientApi {
 
     @PostMapping("/render/upload")
     Response<JobDto> upload(@RequestParam MultipartFile file);

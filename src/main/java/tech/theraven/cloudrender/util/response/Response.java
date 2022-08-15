@@ -84,7 +84,6 @@ public class Response<T> {
         if (isSuccess()) {
             consumer.accept(data);
         }
-
         return this;
     }
 

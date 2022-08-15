@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class    WorkUnit extends AuditableEntity {
+public class WorkUnit extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "worker_gen")
