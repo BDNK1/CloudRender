@@ -1,1 +1,4 @@
 rootProject.name = 'CloudRender'
+include 'app'
+include 'render-analysis-function'
+

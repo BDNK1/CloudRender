@@ -1,0 +1,27 @@
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: render
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:5433/render
+    username: postgres
+    password: 1111
+  application:
+    name: app
+  cloud:
+    gcp:
+      storage:
+        enabled: true
+      project-id: silken-binder-358911
+      credentials:
+        location: classpath:creds.json
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+
+job-distribution:
+  framesPerUnit: 10
