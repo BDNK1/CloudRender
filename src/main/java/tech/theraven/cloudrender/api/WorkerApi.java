@@ -18,4 +18,5 @@ public interface WorkerApi {
 
     @PostMapping("/update")
     Response<Void> updateWorkerStats(@RequestHeader("Authorization") Long workerId);
+
 }

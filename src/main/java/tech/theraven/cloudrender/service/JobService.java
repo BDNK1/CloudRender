@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import tech.theraven.cloudrender.api.dto.GoogleDocumentDto;
 import tech.theraven.cloudrender.domain.Job;
 import tech.theraven.cloudrender.domain.JobSpecs;
 import tech.theraven.cloudrender.domain.WorkUnit;
@@ -58,9 +57,9 @@ public class JobService {
         if (workUnits == null) {
             return Response.of(0L);
         }
-        return Response.of(workUnits.stream()
-                .filter(w -> w.getStatus() == WorkUnitStatus.DONE).count() / workUnits.size()
-        );
+        double doneCount = workUnits.stream()
+                .filter(w -> w.getStatus() == WorkUnitStatus.DONE).count();
+        return Response.of((long) (doneCount / workUnits.size() * 100));
     }
 
 

@@ -104,6 +104,7 @@ public class WorkUnitService {
             changeStatus(workUnit, WorkUnitStatus.DONE);
             return Response.of(workUnit);
         }
+        changeStatus(workUnit, WorkUnitStatus.AVAILABLE);
         return Response.error(new Error(BasicErrorType.UNEXPECTED, "no files"));
     }
 }

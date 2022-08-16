@@ -13,4 +13,5 @@ public interface WorkUnitMapper {
     @Mapping(target="fileUrl", expression = "java(workUnit.getJob().getFileUrl())")
     @Mapping(target="specs.engine", expression = "java(workUnit.getJob().getSpecs().getEngine())")
     WorkUnitDto toDto(WorkUnit workUnit);
+
 }
