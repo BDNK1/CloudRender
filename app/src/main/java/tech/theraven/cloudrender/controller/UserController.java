@@ -5,18 +5,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import tech.theraven.cloudrender.api.ClientApi;
+import tech.theraven.cloudrender.api.UserApi;
 import tech.theraven.cloudrender.api.dto.JobDto;
 import tech.theraven.cloudrender.api.dto.StartRenderRequest;
 import tech.theraven.cloudrender.controller.mapper.JobDtoMapper;
 import tech.theraven.cloudrender.service.JobService;
-import tech.theraven.cloudrender.util.DocumentParser;
 import tech.theraven.cloudrender.util.response.Response;
 
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ClientController implements ClientApi {
+public class UserController implements UserApi {
 
     JobService jobService;
     JobDtoMapper jobDtoMapper;
@@ -29,7 +28,7 @@ public class ClientController implements ClientApi {
     @Override
     public Response<Void> render(StartRenderRequest request) {
         var jobSpecs = jobDtoMapper.toSpecs(request.getSpecs());
-        return jobService.setJobAvailable(request.getJobId(), jobSpecs);
+        return jobService.setJobAvailable(request.getJobId(), request.getPrice(), jobSpecs);
     }
 
     @Override
@@ -41,4 +40,5 @@ public class ClientController implements ClientApi {
     public Response<String> getResult(Long jobId) {
         return jobService.getResult(jobId);
     }
+
 }

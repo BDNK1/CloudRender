@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 import tech.theraven.cloudrender.api.dto.JobAnalysisDto;
 import tech.theraven.cloudrender.api.dto.JobDto;
 import tech.theraven.cloudrender.api.dto.JobSpecsDto;
+import tech.theraven.cloudrender.api.dto.StartRenderRequest;
 import tech.theraven.cloudrender.domain.Job;
 import tech.theraven.cloudrender.domain.JobSpecs;
 
@@ -19,4 +20,5 @@ public interface JobDtoMapper {
     Job toJob(JobDto jobDto);
 
     JobSpecs toSpecs(JobSpecsDto jobSpecs);
+
 }

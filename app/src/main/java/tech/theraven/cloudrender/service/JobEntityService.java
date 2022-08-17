@@ -46,8 +46,7 @@ public class JobEntityService {
 
     public List<Job> findAvailableAndAnalizedJobsWithoutWorkUnits() {
         return jobRepository.findAllByAnalysisIsNotNullAndStatus(JobStatus.AVAILABLE).stream()
-                .filter(j -> j.getWorkUnits().isEmpty() )
-                .peek(System.out::println)
+                .filter(j -> j.getWorkUnits().isEmpty())
                 .collect(Collectors.toList());
     }
 }

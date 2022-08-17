@@ -24,7 +24,6 @@ public class WorkerController implements WorkerApi {
     WorkerMapper workerMapper;
     WorkUnitMapper workUnitMapper;
 
-
     @Override
     public Response<WorkerRegisterResponse> register() {
         return workerService.register()
@@ -42,7 +41,6 @@ public class WorkerController implements WorkerApi {
     public Response<Void> confirmResult(Long workerId) {
         return workerService.findById(workerId)
                 .flatMap(workerService::confirmResult);
-
     }
 
     @Override

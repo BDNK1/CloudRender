@@ -28,6 +28,7 @@ public class Job extends AuditableEntity {
     JobSpecs specs;
     @Enumerated(EnumType.STRING)
     JobStatus status;
+    Long price;
 
     @OneToMany(mappedBy = "job")
     List<WorkUnit> workUnits;
@@ -40,7 +41,6 @@ public class Job extends AuditableEntity {
         return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
     }
 
-//    public boolean
 }
 
 

@@ -38,6 +38,7 @@ public class JobDistributionService {
 
         Optional<WorkUnit> workUnit = workUnitService.findAvailableWorkUnit();
         if (workUnit.isPresent()) {
+            workUnitService.changeStatus(workUnit.get(), WorkUnitStatus.IN_PROGRESS);
             workerStatService.create(worker, workUnit.get());
             return Response.of(workUnit.get());
         }
@@ -46,10 +47,9 @@ public class JobDistributionService {
     }
 
     private Response<WorkUnit> generateWorkUnitsAndGet(Worker worker) {
-        System.out.println("hello");
         List<Job> analizedJobsWithoutWorkUnits = jobEntityService.findAvailableAndAnalizedJobsWithoutWorkUnits();
         var workUnits = workUnitService.brokeIntoWorkUnits(analizedJobsWithoutWorkUnits);
-        Optional<WorkUnit> min = workUnits.stream().min(Comparator.comparing(WorkUnit::getCreatedOn));
+        Optional<WorkUnit> min = workUnits.stream().max(Comparator.comparing(wu->wu.getJob().getPrice()));
         return Response.fromOptional(min, () -> new Error(BasicErrorType.UNEXPECTED, "no work, comeback later"))
                 .peek(wu -> workUnitService.changeStatus(wu, WorkUnitStatus.IN_PROGRESS))
                 .peek(wu -> workerStatService.create(worker, min.get()));

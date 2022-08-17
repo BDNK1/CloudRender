@@ -12,7 +12,8 @@ import java.util.Optional;
 @Repository
 public interface WorkUnitRepository extends CrudRepository<WorkUnit, Long> {
 
-    Optional<WorkUnit> findFirstByStatusAndJobOrderByCreatedOnAsc(WorkUnitStatus status, Job job);
+    Optional<WorkUnit> findFirstByStatusAndJobOrderByJobPriceDesc(WorkUnitStatus status, Job job);
 
-    Optional<WorkUnit> findFirstByStatusOrderByCreatedOnAsc(WorkUnitStatus status);
+    Optional<WorkUnit> findFirstByStatusOrderByJobPriceDesc(WorkUnitStatus status);
+
 }

@@ -29,6 +29,7 @@ dependencies {
     implementation 'com.google.cloud:spring-cloud-gcp-starter-storage:3.3.0'
     implementation 'commons-io:commons-io:2.11.0'
 
+    implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.postgresql:postgresql'
     implementation 'org.mapstruct:mapstruct:1.5.2.Final'
 

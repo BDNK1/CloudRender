@@ -3,6 +3,7 @@ package tech.theraven.cloudrender.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tech.theraven.cloudrender.domain.Job;
@@ -26,11 +27,12 @@ public class JobService {
     JobEntityService jobEntityService;
 
     public Response<Job> createJob(MultipartFile file) {
-        var fileUrl = gcpStorageService.uploadFile(file);
-        return Response.of(jobEntityService.createJob(fileUrl));
+        return validateFile(file)
+                .map(gcpStorageService::uploadFile)
+                .map(jobEntityService::createJob);
     }
 
-    public Response<Void> setJobAvailable(Long jobId, JobSpecs specs) {
+    public Response<Void> setJobAvailable(Long jobId, Long price, JobSpecs specs) {
         var jobOptional = jobEntityService.findById(jobId);
         if (jobOptional.isEmpty()) {
             return Response.error(BasicErrorType.AUTHORIZATION, "no such job");
@@ -39,6 +41,7 @@ public class JobService {
         if (job.getStatus() == JobStatus.DONE || job.getStatus() == JobStatus.AVAILABLE) {
             return Response.error(BasicErrorType.VALIDATION, "Job already in progress");
         }
+        job.setPrice(price);
         job.setStatus(JobStatus.AVAILABLE);
         job.setSpecs(specs);
         jobEntityService.update(job);
@@ -81,5 +84,14 @@ public class JobService {
             job.setStatus(JobStatus.DONE);
             jobEntityService.update(job);
         }
+    }
+
+    private Response<MultipartFile> validateFile(MultipartFile file) {
+        var extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        if (!extension.equals("blend")) {
+            System.out.println(extension);
+            return Response.error(new Error(BasicErrorType.VALIDATION, "Currently we support only blend files"));
+        }
+        return Response.of(file);
     }
 }

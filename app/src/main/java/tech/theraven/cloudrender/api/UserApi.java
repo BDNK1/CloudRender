@@ -6,8 +6,15 @@ import tech.theraven.cloudrender.api.dto.JobDto;
 import tech.theraven.cloudrender.api.dto.StartRenderRequest;
 import tech.theraven.cloudrender.util.response.Response;
 
-@RequestMapping("/api/client")
-public interface    ClientApi {
+@RequestMapping("/api/user")
+public interface UserApi {
+
+//    @PostMapping ("/register")
+//    Response<UserRegisterResponse> register(@RequestBody UserRegisterRequest request);
+
+
+    //    @PostMapping("/login")
+//    Response<LoginResponse> login(@RequestHeader("Authorization") Long userToken);
 
     @PostMapping("/render/upload")
     Response<JobDto> upload(@RequestParam MultipartFile file);

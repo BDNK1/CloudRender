@@ -30,11 +30,11 @@ public class WorkUnitService {
     long framesPerUnit;
 
     public Optional<WorkUnit> findAvailableWorkUnit() {
-        return workUnitRepository.findFirstByStatusOrderByCreatedOnAsc(WorkUnitStatus.AVAILABLE);
+        return workUnitRepository.findFirstByStatusOrderByJobPriceDesc(WorkUnitStatus.AVAILABLE);
     }
 
     public Optional<WorkUnit> findAvailableWorkUnit(Job job) {
-        return workUnitRepository.findFirstByStatusAndJobOrderByCreatedOnAsc(WorkUnitStatus.AVAILABLE, job);
+        return workUnitRepository.findFirstByStatusAndJobOrderByJobPriceDesc(WorkUnitStatus.AVAILABLE, job);
     }
 
     public void changeStatus(WorkUnit workUnit, WorkUnitStatus status) {

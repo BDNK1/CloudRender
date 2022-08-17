@@ -25,4 +25,6 @@ public class WorkerStat extends AuditableEntity {
     Worker worker;
     @Enumerated(EnumType.STRING)
     WorkerStatStatus status;
+
+    //current_frame
 }

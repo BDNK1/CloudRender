@@ -13,4 +13,5 @@ public interface WorkerStatRepository extends CrudRepository<WorkerStat, Long> {
     Optional<WorkerStat> findFirstByWorkerOrderByCreatedOnDesc(Worker worker);
 
     Optional<WorkerStat> findByWorkerAndStatus(Worker worker, WorkerStatStatus status);
+
 }
