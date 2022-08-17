@@ -26,9 +26,9 @@ public class JobService {
 
     JobEntityService jobEntityService;
 
-    public Response<Job> createJob(MultipartFile file) {
+    public Response<Job> createJob(MultipartFile file, String fileUrl) {
         return validateFile(file)
-                .map(gcpStorageService::uploadFile)
+                .map(f -> gcpStorageService.uploadFile(file, fileUrl))
                 .map(jobEntityService::createJob);
     }
 
@@ -88,7 +88,7 @@ public class JobService {
 
     private Response<MultipartFile> validateFile(MultipartFile file) {
         var extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        if (!extension.equals("blend")) {
+        if (extension != null && !extension.equals("blend")) {
             System.out.println(extension);
             return Response.error(new Error(BasicErrorType.VALIDATION, "Currently we support only blend files"));
         }

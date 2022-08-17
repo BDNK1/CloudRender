@@ -6,10 +6,11 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import tech.theraven.cloudrender.api.UserApi;
-import tech.theraven.cloudrender.api.dto.JobDto;
-import tech.theraven.cloudrender.api.dto.StartRenderRequest;
+import tech.theraven.cloudrender.api.dto.*;
 import tech.theraven.cloudrender.controller.mapper.JobDtoMapper;
 import tech.theraven.cloudrender.service.JobService;
+import tech.theraven.cloudrender.service.UserService;
+import tech.theraven.cloudrender.util.UrlUtils;
 import tech.theraven.cloudrender.util.response.Response;
 
 @RestController
@@ -19,10 +20,24 @@ public class UserController implements UserApi {
 
     JobService jobService;
     JobDtoMapper jobDtoMapper;
+    UserService userService;
 
     @Override
-    public Response<JobDto> upload(MultipartFile file) {
-        return jobService.createJob(file).map(jobDtoMapper::toJobDto);
+    public Response<UserRegisterResponse> register(UserRegisterRequest request) {
+        return null;
+    }
+
+    @Override
+    public Response<LoginResponse> login(Long userToken) {
+        return null;
+    }
+
+    @Override
+    public Response<JobDto> upload(MultipartFile file, Long userId) {
+        return userService.getById(userId)
+                .map(user -> UrlUtils.generateFileUrl(file.getOriginalFilename(), user.getEmail()))
+                .flatMap(fileUrl -> jobService.createJob(file, fileUrl))
+                .map(jobDtoMapper::toJobDto);
     }
 
     @Override

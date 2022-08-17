@@ -5,12 +5,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.RestController;
 import tech.theraven.cloudrender.api.WorkerApi;
-import tech.theraven.cloudrender.api.dto.*;
+import tech.theraven.cloudrender.api.dto.WorkStatsUpdateDto;
+import tech.theraven.cloudrender.api.dto.WorkUnitDto;
+import tech.theraven.cloudrender.api.dto.WorkerBalanceDto;
+import tech.theraven.cloudrender.api.dto.WorkerRegisterResponse;
 import tech.theraven.cloudrender.controller.mapper.WorkUnitMapper;
 import tech.theraven.cloudrender.controller.mapper.WorkerMapper;
-import tech.theraven.cloudrender.domain.enums.WorkerStatStatus;
 import tech.theraven.cloudrender.service.JobDistributionService;
-import tech.theraven.cloudrender.service.WorkUnitService;
 import tech.theraven.cloudrender.service.WorkerService;
 import tech.theraven.cloudrender.util.response.Response;
 
@@ -44,9 +45,14 @@ public class WorkerController implements WorkerApi {
     }
 
     @Override
-    public Response<Void> updateWorkerStats(Long workerId) {
+    public Response<Void> updateWorkerStats(Long workerId, WorkStatsUpdateDto updateDto) {
         return workerService.findById(workerId)
-                .flatMap(w -> workerService.updateWorkerStat(w, WorkerStatStatus.IN_PROGRESS));
+                .flatMap(w -> workerService.updateWorkerStat(w, updateDto.getCurrentFrame()));
+    }
+
+    @Override
+    public Response<WorkerBalanceDto> getBalance(Long workerId) {
+        return null;
     }
 
 }

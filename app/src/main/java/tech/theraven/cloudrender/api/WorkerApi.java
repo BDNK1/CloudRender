@@ -17,6 +17,9 @@ public interface WorkerApi {
     Response<Void> confirmResult(@RequestHeader("Authorization") Long workerId);
 
     @PostMapping("/update")
-    Response<Void> updateWorkerStats(@RequestHeader("Authorization") Long workerId);
+    Response<Void> updateWorkerStats(@RequestHeader("Authorization") Long workerId, WorkStatsUpdateDto updateDto);
+
+    @GetMapping("/balance")
+    Response<WorkerBalanceDto> getBalance(@RequestHeader("Authorization") Long workerId);
 
 }

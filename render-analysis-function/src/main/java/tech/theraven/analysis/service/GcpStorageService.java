@@ -1,6 +1,7 @@
 package tech.theraven.analysis.service;
 
 
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import lombok.AccessLevel;
@@ -9,7 +10,6 @@ import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -24,17 +24,17 @@ public class GcpStorageService {
 
     @SneakyThrows
     public String downloadFile(String path) {
-        //TODO: refactor
+        var relativePath = path.replace("https://storage.googleapis.com/" + BUCKET_NAME + "/", "");
+        Path pathToDownload = Path.of("/downloads/", relativePath);
+
         Bucket bucket = storage.get(BUCKET_NAME);
-        path = path.replace("https://storage.googleapis.com/" + BUCKET_NAME + "/", "");
-        Path pathToDownload = Path.of("/downloads/", path);
-        var file = bucket.get(path);
+        Blob file = bucket.get(relativePath);
         Files.createDirectories(pathToDownload.getParent());
         Files.createFile(pathToDownload);
         pathToDownload.toFile().deleteOnExit();
         file.downloadTo(pathToDownload);
-        return pathToDownload.toString();
-
+        return pathToDownload.toAbsolutePath().toString();
     }
+
 
 }

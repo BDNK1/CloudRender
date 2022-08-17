@@ -14,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 public class WorkUnitDto {
 
     String fileUrl;
+    String uploadUrl;
     Long startFrame;
     Long endFrame;
     JobSpecsDto specs;

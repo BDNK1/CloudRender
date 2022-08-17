@@ -15,4 +15,5 @@ public class AnalysisInfo {
 
     Long framesCount;
     Long difficulty;
+
 }

@@ -26,7 +26,7 @@ public class JobAnalysisService {
     public void analyzeJobs() {
         var jobsToAnalyze = jobRepository.findAllByAnalysisIsNullOrderByCreatedOn();
         jobsToAnalyze.stream()
-                .map(j -> Pair.of(j, gcpStorageService.downloadFile(j.getFileUrl())))
+                .map(job -> Pair.of(job, gcpStorageService.downloadFile(job.getFileUrl())))
                 .map(pair -> Pair.of(pair.getFirst(), getNumberOfFrames(pair.getSecond())))
                 .forEach(pair -> {
                     var job = pair.getFirst();

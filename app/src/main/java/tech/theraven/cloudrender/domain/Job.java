@@ -30,17 +30,15 @@ public class Job extends AuditableEntity {
     JobStatus status;
     Long price;
 
-    @OneToMany(mappedBy = "job")
+    User user;
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
     List<WorkUnit> workUnits;
 
     public boolean isAnalized() {
         return analysis != null;
     }
 
-    public String getName() {
-        return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-    }
-    
+
 }
 
 

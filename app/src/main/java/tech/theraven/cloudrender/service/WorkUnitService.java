@@ -48,6 +48,7 @@ public class WorkUnitService {
                 .filter(Response::isSuccess)
                 .flatMap(r -> r.getData().stream())
                 .toList();
+
         workUnitRepository.saveAll(workUnits);
         return workUnits;
     }
@@ -73,7 +74,6 @@ public class WorkUnitService {
                 });
 
         distributeOverflow(workUnits, framesCount % framesPerUnit);
-        System.out.println(workUnits);
         return Response.of(workUnits);
 
     }

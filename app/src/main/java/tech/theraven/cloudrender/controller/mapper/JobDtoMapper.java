@@ -5,14 +5,13 @@ import org.mapstruct.Mapping;
 import tech.theraven.cloudrender.api.dto.JobAnalysisDto;
 import tech.theraven.cloudrender.api.dto.JobDto;
 import tech.theraven.cloudrender.api.dto.JobSpecsDto;
-import tech.theraven.cloudrender.api.dto.StartRenderRequest;
 import tech.theraven.cloudrender.domain.Job;
 import tech.theraven.cloudrender.domain.JobSpecs;
 
 @Mapper(componentModel = "spring")
 public interface JobDtoMapper {
 
-    @Mapping(target = "fileName", expression = "java(job.getName())")
+    @Mapping(target = "fileName", expression = "java(UrlUtils.getFileName(job.getFileUrl()))")
     JobDto toJobDto(Job job);
 
     Job toJob(JobAnalysisDto jobDto);

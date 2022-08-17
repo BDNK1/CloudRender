@@ -26,5 +26,5 @@ public class WorkerStat extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     WorkerStatStatus status;
 
-    //current_frame
+    Long currentFrame;
 }

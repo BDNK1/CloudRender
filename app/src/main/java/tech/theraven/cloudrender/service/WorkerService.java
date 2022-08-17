@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import tech.theraven.cloudrender.domain.Worker;
 import tech.theraven.cloudrender.domain.enums.WorkerStatStatus;
 import tech.theraven.cloudrender.repository.WorkerRepository;
+import tech.theraven.cloudrender.util.UrlUtils;
 import tech.theraven.cloudrender.util.response.BasicErrorType;
 import tech.theraven.cloudrender.util.response.Error;
 import tech.theraven.cloudrender.util.response.Response;
@@ -19,8 +20,9 @@ public class WorkerService {
 
     WorkUnitService workUnitService;
     WorkerStatService workerStatService;
-    WorkerRepository workerRepository;
     JobService jobService;
+    GcpStorageService gcpStorageService;
+    WorkerRepository workerRepository;
 
     public Response<Worker> register() {
         return Response.of(workerRepository.save(new Worker()));
@@ -40,9 +42,10 @@ public class WorkerService {
                 .andThen(Response::empty);
     }
 
-    public Response<Void> updateWorkerStat(Worker worker, WorkerStatStatus status) {
+    public Response<Void> updateWorkerStat(Worker worker, Long currentFrame) {
         return workerStatService.getCurrentWorkUnit(worker)
-                .peek(w -> workerStatService.changeCurrentStatus(worker, status))
+                .map(wu -> gcpStorageService.checkFiles(wu.getStartFrame(), currentFrame, UrlUtils.getUploadFolderPath(wu.getJob().getFileUrl())))
+                .peek(w -> workerStatService.changeCurrentStatus(worker, WorkerStatStatus.IN_PROGRESS))
                 .andThen(Response::empty);
     }
 
